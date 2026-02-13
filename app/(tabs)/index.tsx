@@ -1,5 +1,6 @@
 import { Alert, StyleSheet } from 'react-native';
 
+import { i18n } from '@/languages/i18n';
 import {
   Button, Host, HStack,
   SecureField,
@@ -14,7 +15,6 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import React from 'react';
 import { Controller, useForm } from "react-hook-form";
-import { i18n } from '@/languages/i18n';
 
 export type LoginReq = {
   email: string,
@@ -51,6 +51,15 @@ export default function HomeScreen() {
     },
   });
 
+  const comingSoon = () => {
+    Alert.alert(i18n.t('coming_soon'), "",
+      [
+        {
+          text: "OK"
+        },
+      ])
+  };
+
   return (
     <Host style={{ flex: 1 }} colorScheme={colorScheme}>
       <VStack
@@ -68,9 +77,9 @@ export default function HomeScreen() {
           }),
         ]}
       >
-        
+
         <Text testID='welcome' modifiers={[]} size={32}>Welcome back</Text>
-        
+
         <Text color={secondaryLabel}>
           Enter your email and password to sign in to your account
         </Text>
@@ -78,7 +87,7 @@ export default function HomeScreen() {
           <VStack spacing={18}>
             <Button
               testID='login_apple_id'
-              onPress={() => Alert.alert(i18n.t('coming_soon'))}
+              onPress={comingSoon}
               color={secondarySystemBackground}
               variant="glassProminent"
               controlSize="large"
@@ -99,10 +108,10 @@ export default function HomeScreen() {
                 <Text color={labelColor}>Continue with Apple</Text>
                 <Spacer />
               </HStack>
-              
+
             </Button>
             <Button
-              onPress={() => Alert.alert("Coming soon!")}
+              onPress={comingSoon}
               color={secondarySystemBackground}
               variant="glassProminent"
               controlSize="large"
@@ -248,7 +257,7 @@ export default function HomeScreen() {
               variant="glassProminent"
               controlSize="large"
               color={systemBlue}
-              onPress={() => Alert.alert("Coming soon!")}
+              onPress={comingSoon}
               // onPress={handleSubmit(onSubmit, onError)}
               // disabled={signIn.isPending}
               modifiers={[cornerRadius(30)]}
@@ -292,7 +301,7 @@ export default function HomeScreen() {
               <Text>Don&apos;t have an account? </Text>
               <Button
                 // onPress={() => router.replace("/")}
-                onPress={() => Alert.alert("Coming soon!")}
+                onPress={comingSoon}
                 variant="link">
                 Sign up
               </Button>
