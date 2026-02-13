@@ -47,8 +47,25 @@ jobs:
           open -a Simulator
           sleep 15
 
-      - name: Build and Run iOS App
-        run: npx expo run:ios --no-bundler --configuration Release
+      # - name: Build and Run iOS App
+      #   run: npx expo run:ios --no-bundler --configuration Release
+      - name: Build iOS App (Release)
+        run: |
+          npx expo prebuild --platform ios
+          xcodebuild \
+            -workspace ios/*.xcworkspace \
+            -scheme $(ls ios/*.xcodeproj/xcshareddata/xcschemes | head -n 1 | xargs basename -s .xcscheme) \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -derivedDataPath build
+
+      - name: Install and Launch App
+        run: |
+          APP_PATH=$(find build/Build/Products/Release-iphonesimulator -name "*.app" | head -n 1)
+          BUNDLE_ID=$(npx expo config --json | jq -r '.ios.bundleIdentifier')
+          
+          xcrun simctl install booted "$APP_PATH"
+          xcrun simctl launch booted "$BUNDLE_ID"
 
       - name: Run Maestro Tests
         run: maestro test ./expo-sample/.maestro/ --format junit --output report.xml
