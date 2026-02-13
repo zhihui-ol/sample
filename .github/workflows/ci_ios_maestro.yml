@@ -31,10 +31,10 @@ jobs:
       - name: Install Node Modules
         run: npm install
 
-      - name: Install Maestro
-        uses: mobile-dev-inc/maestro-github-actions@main
-        with:
-          version: 'latest' 
+      # - name: Install Maestro
+      #   uses: mobile-dev-inc/maestro-github-actions@main
+      #   with:
+      #     version: 'latest' 
         # run: |
         #   curl -fsSL "https://get.maestro.mobile.dev" | bash
         #   echo "$HOME/.maestro/bin" >> $GITHUB_PATH
