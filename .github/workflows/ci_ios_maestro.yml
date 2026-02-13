@@ -1,0 +1,86 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will install Deno then run `deno lint` and `deno test`.
+# For more information see: https://github.com/denoland/setup-deno
+
+name: Deno_iOS
+
+on:
+  push:
+    tags:
+      - "V*"
+    # branches: ["main"]
+  pull_request:
+    # branches: ["main"]
+  workflow_dispatch:
+
+# permissions:
+#   contents: read
+
+jobs:
+  test:
+    runs-on: self-hosted
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+
+      - name: Install Node Modules
+        run: npm install
+
+      - name: Ensure Maestro CLI
+        run: |
+          # 检查是否已安装指定版本，避免自托管服务器重复下载
+          if [[ "$(maestro --version 2>/dev/null)" != "$MAESTRO_VERSION" ]]; then
+            echo "Installing Maestro version $MAESTRO_VERSION..."
+            export MAESTRO_VERSION=$MAESTRO_VERSION
+            curl -Ls "https://get.maestro.mobile.dev" | bash
+          else
+            echo "Maestro $MAESTRO_VERSION already installed."
+          fi
+          
+          # 确保路径被加入 GitHub PATH 和当前进程 PATH
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.maestro/bin:$PATH"
+
+          maestro --version
+      
+      - name: Boot iOS Simulator
+        run: |
+          DEVICE="iPhone 15"
+          UDID=$(xcrun simctl list devices | grep "$DEVICE" | grep -v unavailable | head -n 1 | awk -F '[()]' '{print $2}')
+          xcrun simctl boot "$UDID" || true
+          open -a Simulator
+          sleep 15
+
+      # - name: Build and Run iOS App
+      #   run: npx expo run:ios --no-bundler --configuration Release
+      - name: Build iOS App (Release)
+        run: |
+          npx expo prebuild --platform ios
+          xcodebuild \
+            -workspace ios/*.xcworkspace \
+            -scheme $(ls ios/*.xcodeproj/xcshareddata/xcschemes | head -n 1 | xargs basename -s .xcscheme) \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -derivedDataPath build
+
+      - name: Install and Launch App
+        run: |
+          APP_PATH=$(find build/Build/Products/Release-iphonesimulator -name "*.app" | head -n 1)
+          BUNDLE_ID=$(npx expo config --json | jq -r '.ios.bundleIdentifier')
+          
+          xcrun simctl install booted "$APP_PATH"
+          xcrun simctl launch booted "$BUNDLE_ID"
+
+      - name: Run Maestro Tests
+        run: maestro test .maestro/ --format junit --output report.xml
+
+      - name: Upload Maestro Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-report
+          path: report.xml
