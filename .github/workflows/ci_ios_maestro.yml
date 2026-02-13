@@ -33,18 +33,20 @@ jobs:
 
       - name: Ensure Maestro CLI
         run: |
-          if ! command -v maestro &> /dev/null; then
-            curl -fsSL "https://get.maestro.mobile.dev" | bash
+          # 检查是否已安装指定版本，避免自托管服务器重复下载
+          if [[ "$(maestro --version 2>/dev/null)" != "$MAESTRO_VERSION" ]]; then
+            echo "Installing Maestro version $MAESTRO_VERSION..."
+            export MAESTRO_VERSION=$MAESTRO_VERSION
+            curl -Ls "https://get.maestro.mobile.dev" | bash
+          else
+            echo "Maestro $MAESTRO_VERSION already installed."
           fi
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
           
-      # - name: Install Maestro
-      #   uses: mobile-dev-inc/maestro-github-actions@main
-      #   with:
-      #     version: 'latest' 
-        # run: |
-        #   curl -fsSL "https://get.maestro.mobile.dev" | bash
-        #   echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          # 确保路径被加入 GitHub PATH 和当前进程 PATH
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.maestro/bin:$PATH"
+
+          maestro --version
       
       - name: Boot iOS Simulator
         run: |
