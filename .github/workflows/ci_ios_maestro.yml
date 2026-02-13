@@ -48,7 +48,7 @@ jobs:
           sleep 15
 
       - name: Build and Run iOS App
-        run: npx expo run:ios
+        run: npm run ios
 
       - name: Run Maestro Tests
         run: maestro test ./expo-sample/.maestro/ --format junit --output report.xml
