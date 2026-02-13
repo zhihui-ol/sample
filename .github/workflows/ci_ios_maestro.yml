@@ -75,7 +75,7 @@ jobs:
           xcrun simctl launch booted "$BUNDLE_ID"
 
       - name: Run Maestro Tests
-        run: maestro test ./expo-sample/.maestro/ --format junit --output report.xml
+        run: maestro test .maestro/ --format junit --output report.xml
 
       - name: Upload Maestro Report
         uses: actions/upload-artifact@v4
