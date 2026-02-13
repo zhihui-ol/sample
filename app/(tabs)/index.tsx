@@ -1,80 +1,307 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import {
+  Button, Host, HStack,
+  SecureField,
+  Spacer,
+  Switch, Text, TextField, VStack
+} from "@expo/ui/swift-ui";
+import {
+  background, cornerRadius,
+  foregroundStyle,
+  frame,
+  padding,
+} from '@expo/ui/swift-ui/modifiers';
+import React from 'react';
+import { Controller, useForm } from "react-hook-form";
+import { i18n } from '@/languages/i18n';
+
+export type LoginReq = {
+  email: string,
+  password: string
+};
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [isOpened, setIsOpened] = React.useState(true);
+  const [value, setValue] = React.useState('');
+  const colorScheme = "light";
+  const secondaryLabel = colorScheme === "light" ? "#3C424B" : "#A1CEDC";
+  const secondarySystemBackground = colorScheme === "light" ? "#F2F2F7" : "#1D3D47";
+  const systemTransparent = colorScheme === "light" ? "#FFFFFF00" : "#00000000";
+  const labelColor = colorScheme === "light" ? "#000000" : "#FFFFFF";
+  const systemRed = colorScheme === "light" ? "#FF3B30" : "#FF453A";
+  const systemBlue = colorScheme === "light" ? "#007AFF" : "#0A84FF";
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const [isSecure, setIsSecure] = React.useState(true);
+  const [isChecked, setChecked] = React.useState(false);
+  const savedEmail = isChecked ? "user@example.com" : "";
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LoginReq>({
+    // resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  return (
+    <Host style={{ flex: 1 }} colorScheme={colorScheme}>
+      <VStack
+        spacing={34}
+        alignment="leading"
+        modifiers={[
+          frame({
+            maxWidth: Infinity,
+            maxHeight: Infinity,
+            alignment: "top",
+          }),
+          padding({
+            horizontal: 20,
+            top: 10,
+          }),
+        ]}
+      >
+        
+        <Text testID='welcome' modifiers={[]} size={32}>Welcome back</Text>
+        
+        <Text color={secondaryLabel}>
+          Enter your email and password to sign in to your account
+        </Text>
+        <VStack spacing={18}>
+          <VStack spacing={18}>
+            <Button
+              testID='login_apple_id'
+              onPress={() => Alert.alert(i18n.t('coming_soon'))}
+              color={secondarySystemBackground}
+              variant="glassProminent"
+              controlSize="large"
+              modifiers={[background(systemTransparent), cornerRadius(30)]}
+            >
+              <HStack
+                spacing={8}
+                modifiers={[
+                  frame({
+                    maxWidth: Infinity,
+                    alignment: "center",
+                    height: 20,
+                  }),
+                ]}
+              >
+                <Spacer />
+                {/* <Image systemName="apple.logo" color={labelColor} /> */}
+                <Text color={labelColor}>Continue with Apple</Text>
+                <Spacer />
+              </HStack>
+              
+            </Button>
+            <Button
+              onPress={() => Alert.alert("Coming soon!")}
+              color={secondarySystemBackground}
+              variant="glassProminent"
+              controlSize="large"
+              modifiers={[background(systemTransparent), cornerRadius(30)]}
+            >
+              <HStack
+                modifiers={[
+                  frame({
+                    width: Infinity,
+                    alignment: "center",
+                    height: 20,
+                  }),
+                ]}
+                spacing={8}
+              >
+                <Spacer />
+                {/* <HStack modifiers={[frame({ width: 20, height: 20, alignment: "center" })]}>
+                  <RNImage
+                    source={require("@/assets/images/google.png")}
+                    style={{
+                      width: 20,
+                      height: 20,
+                    }}
+                    resizeMode="contain"
+                  />
+                </HStack> */}
+                <Text color={labelColor}>Continue with Google</Text>
+                <Spacer />
+              </HStack>
+            </Button>
+          </VStack>
+
+          <HStack alignment="center">
+            <Spacer />
+            <Text modifiers={[foregroundStyle({ type: "color", color: secondaryLabel })]}>
+              or
+            </Text>
+            <Spacer />
+          </HStack>
+
+          <VStack spacing={30}>
+            <VStack spacing={8} alignment="leading">
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    testID='account'
+                    key={savedEmail || "email-input"}
+                    modifiers={[
+                      frame({
+                        maxWidth: Infinity,
+                      }),
+                      background(secondarySystemBackground),
+                      cornerRadius(30),
+                    ]}
+                    placeholder="Email"
+                    defaultValue={value}
+                    onChangeText={onChange}
+                    keyboardType="email-address"
+                    autocorrection={false}
+                  />
+                )}
+              />
+              {errors.email && (
+                <Text children={errors.email.message ?? ''}></Text>
+              )}
+
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value } }) => (
+                  <HStack
+                    modifiers={[
+                      background(secondarySystemBackground),
+                      cornerRadius(30),
+                    ]}
+                  >
+                    {isSecure ? (
+                      <SecureField
+                        testID='password'
+                        placeholder="Password"
+                        defaultValue={value}
+                        onChangeText={onChange}
+                      />
+                    ) : (
+                      <TextField
+                        testID='password'
+                        placeholder="Password"
+                        defaultValue={value}
+                        onChangeText={onChange}
+                        autocorrection={false}
+                      />
+                    )}
+                    <Spacer />
+                    <Button
+                      systemImage={isSecure ? "eye.slash" : "eye"}
+                      onPress={() => setIsSecure((prev) => !prev)}
+                      color={secondaryLabel}
+                    />
+                  </HStack>
+                )}
+              />
+              {errors.password && (
+                <Text
+                  color={systemRed}
+                  modifiers={[
+                    padding({
+                      leading: 8,
+                    }),
+                  ]}
+                  children={errors.password.message ?? ''}
+                >
+
+                </Text>
+              )}
+            </VStack>
+
+            <HStack alignment="center">
+              <Switch
+                color={labelColor}
+                value={isChecked}
+                onValueChange={(value) => {
+                  setChecked(value);
+                  if (!value) {
+                    // clearEmail();
+                  }
+                }}
+                variant="checkbox"
+                label="Remember me"
+              />
+              <Spacer />
+              <Button
+                // onPress={() => router.navigate("/")}
+                modifiers={[foregroundStyle({ type: "color", color: systemBlue })]}
+                variant="link"
+              >
+                Forgot password?
+              </Button>
+            </HStack>
+
+            <Button
+              variant="glassProminent"
+              controlSize="large"
+              color={systemBlue}
+              onPress={() => Alert.alert("Coming soon!")}
+              // onPress={handleSubmit(onSubmit, onError)}
+              // disabled={signIn.isPending}
+              modifiers={[cornerRadius(30)]}
+            >
+              <HStack
+                modifiers={[
+                  frame({
+                    width: Infinity,
+                    alignment: "center",
+                    height: 20,
+                  }),
+                ]}
+                spacing={8}
+              >
+                <Spacer />
+                {/* {signIn.isPending && (
+                    <HStack modifiers={[frame({ width: 20, height: 20, alignment: "center" })]}>
+                      <RNView
+                        style={{
+                          width: 20,
+                          height: 20,
+                        }}
+                      >
+                        <ActivityIndicator
+                          size="small"
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        />
+                      </RNView>
+                    </HStack>
+                  )} */}
+                <Text>Sign in</Text>
+                <Spacer />
+              </HStack>
+            </Button>
+
+            <HStack alignment="center" modifiers={[padding({ all: 20 })]}>
+              <Spacer />
+              <Text>Don&apos;t have an account? </Text>
+              <Button
+                // onPress={() => router.replace("/")}
+                onPress={() => Alert.alert("Coming soon!")}
+                variant="link">
+                Sign up
+              </Button>
+              <Spacer />
+            </HStack>
+          </VStack>
+        </VStack>
+      </VStack>
+    </Host>
   );
 }
 
@@ -85,8 +312,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+    // gap: 8,
+    // marginBottom: 8,
   },
   reactLogo: {
     height: 178,

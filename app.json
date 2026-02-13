@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.olang.exposample",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +23,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.olang.exposample"
     },
     "web": {
       "output": "static",
@@ -38,11 +43,32 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["en", "zh", "zh-hans"],
+            "android": ["en", "zh", "zh-hans"]
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "16ea4e2a-a285-4f98-9f2b-90a64843258b"
+      }
+    },
+    "owner": "zhihui-ol",
+    "locales": {
+      "en": "./languages/en.json",
+      "zh": "./languages/zh.json",
+      "zh-Hans": "./languages/zh-hans.json"
     }
   }
 }

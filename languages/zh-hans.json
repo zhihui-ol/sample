@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "Kindo",
+    "NSContactsUsageDescription": "Kindo"
+  },
+  "android": {
+    "app_name": "Kindo"
+  }
+}

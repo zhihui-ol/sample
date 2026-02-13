@@ -1,0 +1,15 @@
+appId: com.olang.exposample # This is an example app id. Replace it with your app id.
+---
+- launchApp
+- assertVisible: "Welcome.*"
+- tapOn: "Continue with Apple"
+- tapOn: "OK"
+- tapOn: "Continue with Google"
+- tapOn: "OK"
+- tapOn:
+    id: "account"
+- inputRandomEmail
+- tapOn:
+    id: "password"
+- inputRandomText
+- tapOn: "Sign In"
