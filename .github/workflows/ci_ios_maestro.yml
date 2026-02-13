@@ -32,9 +32,12 @@ jobs:
         run: npm install
 
       - name: Install Maestro
-        run: |
-          curl -fsSL "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+        uses: mobile-dev-inc/maestro-github-actions@main
+        with:
+          version: 'latest' 
+        # run: |
+        #   curl -fsSL "https://get.maestro.mobile.dev" | bash
+        #   echo "$HOME/.maestro/bin" >> $GITHUB_PATH
       
       - name: Boot iOS Simulator
         run: |
