@@ -28,8 +28,8 @@ jobs:
       - name: Setup repo
         uses: actions/checkout@v4
 
-      # - name: Install Node Modules
-      #   run: npm install
+      - name: Install Node Modules
+        run: npm install
 
       # - name: Install Maestro
       #   uses: mobile-dev-inc/maestro-github-actions@main
